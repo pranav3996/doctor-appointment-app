@@ -25,6 +25,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final String? userEmail =
+        ModalRoute.of(context)!.settings.arguments as String?;
     List<Widget> screens = [
       HomeTab(
         onPressedScheduleCard: goToSchedule,
@@ -37,6 +39,16 @@ class _HomeState extends State<Home> {
         backgroundColor: Color(MyColors.primary),
         elevation: 0,
         toolbarHeight: 0,
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(userEmail!),
+            Text(
+              "How are you feeling today?",
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: screens[_selectedIndex],

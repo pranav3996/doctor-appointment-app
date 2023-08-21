@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/styles/styles.dart';
@@ -15,12 +17,12 @@ List<Map> doctors = [
   },
   {
     'img': 'assets/doctor02.png',
-    'doctorName': 'Dr. Gardner Pearson',
+    'doctorName': 'Dr. Sam',
     'doctorTitle': 'Heart Specialist'
   },
   {
     'img': 'assets/doctor03.jpeg',
-    'doctorName': 'Dr. Rosa Williamson',
+    'doctorName': 'Dr.Mandar',
     'doctorTitle': 'Skin Specialist'
   }
 ];
@@ -226,7 +228,7 @@ class AppointmentCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Dr.Muhammed Syahid',
+                            Text('Dr.Sushil',
                                 style: TextStyle(color: Colors.white)),
                             SizedBox(
                               height: 2,
@@ -457,18 +459,22 @@ class UserIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check if userEmail is not null before using it
+    final String? userEmail =
+        ModalRoute.of(context)!.settings.arguments as String?;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'Hello',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             Text(
-              'Brad King 👋',
+              userEmail!,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ],

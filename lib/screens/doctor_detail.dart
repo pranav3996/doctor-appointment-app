@@ -62,7 +62,7 @@ class DetailBody extends StatelessWidget {
             height: 15,
           ),
           Text(
-            'Dr. Joshua Simorangkir is a specialist in internal medicine who specialzed blah blah.',
+            'Dr. Sushil is a specialist in internal medicine who specialzed blah blah.',
             style: TextStyle(
               color: Color(MyColors.purple01),
               fontWeight: FontWeight.w500,
@@ -241,7 +241,7 @@ class DetailDoctorCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Dr. Josua Simorangkir',
+                      'Dr. Sushil',
                       style: TextStyle(
                           color: Color(MyColors.header01),
                           fontWeight: FontWeight.w700),
