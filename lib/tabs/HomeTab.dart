@@ -1,6 +1,10 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_literals_to_create_immutables, unused_local_variable, prefer_typing_uninitialized_variables, unnecessary_new, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:medicare/api/covid.dart';
+import 'package:medicare/api/hospital.dart';
+import 'package:medicare/api/medical.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/styles/styles.dart';
 
@@ -280,29 +284,208 @@ class AppointmentCard extends StatelessWidget {
   }
 }
 
-List<Map> categories = [
-  {'icon': Icons.coronavirus, 'text': 'Covid 19'},
-  {'icon': Icons.local_hospital, 'text': 'Hospital'},
-  {'icon': Icons.car_rental, 'text': 'Ambulance'},
-  {'icon': Icons.local_pharmacy, 'text': 'Pill'},
-];
-
 class CategoryIcons extends StatelessWidget {
   const CategoryIcons({
     Key? key,
   }) : super(key: key);
+
+  Future<void> showCovidDataDialog(
+      BuildContext context, String categoryText) async {
+    covid cov = new covid();
+    await cov.getData();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('COVID-19 Data for $categoryText'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('State: ${cov.state}'),
+              Text('Confirmed: ${cov.confirmed.toString()}'),
+              Text('Recovered: ${cov.recovered.toString()}'),
+              Text('Deaths: ${cov.deaths.toString()}'),
+              Text('Active: ${cov.active.toString()}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showHospitalsDataDialog(
+    BuildContext context,
+  ) async {
+    hospital hos = new hospital();
+    await hos.getData();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Numbers of Hospitals'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('State: ${hos.state}'),
+              Text('Hospitals: ${hos.hospitals.toString()}'),
+              Text('Beds: ${hos.bed.toString()}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showDrugsDataDialog(
+    BuildContext context,
+  ) async {
+    medical med = new medical();
+    await med.getData();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Pharmacy Companies '),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Company Name: ${med.name}'),
+              Text('Number of Products: ${med.products.toString()}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> makeCall(
+    BuildContext context,
+  ) async {
+    var url = Uri.parse("tel:+8108863547");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+      print(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (var category in categories)
-          CategoryIcon(
-            icon: category['icon'],
-            text: category['text'],
-          ),
+        CategoryIcon(
+          icon: Icons.coronavirus,
+          text: 'Covid 19',
+          onTap: () {
+            showCovidDataDialog(context, 'Covid 19');
+          },
+        ),
+        CategoryIcon(
+          icon: Icons.local_hospital,
+          text: 'Hospital',
+          onTap: () {
+            showHospitalsDataDialog(
+              context,
+            );
+          },
+        ),
+        CategoryIcon(
+          icon: Icons.car_rental,
+          text: 'Ambulance',
+          onTap: () {
+            makeCall(context);
+          },
+        ),
+        CategoryIcon(
+          icon: Icons.local_pharmacy,
+          text: 'Pill',
+          onTap: () {
+            showDrugsDataDialog(context);
+          },
+        ),
       ],
+    );
+  }
+}
+
+class CategoryIcon extends StatelessWidget {
+  IconData icon;
+  String text;
+  VoidCallback onTap;
+
+  CategoryIcon({
+    required this.icon,
+    required this.text,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      splashColor: Color(MyColors.bg01),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Color(MyColors.bg),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Icon(
+                icon,
+                color: Color(MyColors.primary),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              text,
+              style: TextStyle(
+                color: Color(MyColors.primary),
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -354,54 +537,6 @@ class ScheduleCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class CategoryIcon extends StatelessWidget {
-  IconData icon;
-  String text;
-
-  CategoryIcon({
-    required this.icon,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      splashColor: Color(MyColors.bg01),
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Column(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Color(MyColors.bg),
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Icon(
-                icon,
-                color: Color(MyColors.primary),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              text,
-              style: TextStyle(
-                color: Color(MyColors.primary),
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
