@@ -3,7 +3,7 @@ class MyColors {
   static int primary = 0xff575de3;
   static int purple01 = 0xff918fa5;
   static int purple02 = 0xff6b6e97;
-  static int yellow01 = 0xffeaa63b;
+  static int yellow01 = 0x57e057;
   static int yellow02 = 0xfff29b2b;
   static int bg = 0xfff5f3fe;
   static int bg01 = 0xff6f75e1;

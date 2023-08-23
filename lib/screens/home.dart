@@ -66,15 +66,16 @@ class _HomeState extends State<Home> {
                 decoration: BoxDecoration(
                   border: Border(
                     top: _selectedIndex == navigationBarItem['index']
-                        ? BorderSide(color: Color(MyColors.bg01), width: 5)
+                        ? BorderSide(
+                            color: Color.fromARGB(255, 99, 179, 110), width: 5)
                         : BorderSide.none,
                   ),
                 ),
                 child: Icon(
                   navigationBarItem['icon'],
                   color: _selectedIndex == 0
-                      ? Color(MyColors.bg01)
-                      : Color(MyColors.bg02),
+                      ? Color.fromARGB(255, 99, 179, 110)
+                      : Color.fromARGB(255, 99, 179, 110),
                 ),
               ),
               label: '',

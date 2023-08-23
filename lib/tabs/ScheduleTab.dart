@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/styles/styles.dart';
@@ -81,7 +83,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
             Text(
               'Schedule',
               textAlign: TextAlign.center,
-              style: kTitleStyle,
+              style: TextStyle(color: Colors.black),
             ),
             SizedBox(
               height: 20,
@@ -92,7 +94,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
                   width: double.infinity,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Color(MyColors.bg),
+                    color: Color.fromARGB(255, 187, 245, 194),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -120,7 +122,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
                             child: Center(
                               child: Text(
                                 filterStatus.name,
-                                style: kFilterStyle,
+                                style: TextStyle(color: Colors.black),
                               ),
                             ),
                           ),
@@ -135,7 +137,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
                     width: 100,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Color(MyColors.primary),
+                      color: Color.fromARGB(255, 99, 179, 110),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Center(
@@ -183,7 +185,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
                                   Text(
                                     _schedule['doctorName'],
                                     style: TextStyle(
-                                      color: Color(MyColors.header01),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -193,9 +195,9 @@ class _ScheduleTabState extends State<ScheduleTab> {
                                   Text(
                                     _schedule['doctorTitle'],
                                     style: TextStyle(
-                                      color: Color(MyColors.grey02),
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
@@ -213,8 +215,14 @@ class _ScheduleTabState extends State<ScheduleTab> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: OutlinedButton(
+                                child: ElevatedButton(
                                   child: Text('Cancel'),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Color.fromARGB(255, 99, 179, 110),
+                                    ),
+                                  ),
                                   onPressed: () {},
                                 ),
                               ),
@@ -224,6 +232,12 @@ class _ScheduleTabState extends State<ScheduleTab> {
                               Expanded(
                                 child: ElevatedButton(
                                   child: Text('Reschedule'),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Color.fromARGB(255, 99, 179, 110),
+                                    ),
+                                  ),
                                   onPressed: () => {},
                                 ),
                               )
@@ -252,7 +266,7 @@ class DateTimeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(MyColors.bg03),
+        color: Color.fromARGB(255, 187, 245, 194),
         borderRadius: BorderRadius.circular(10),
       ),
       width: double.infinity,
@@ -265,7 +279,7 @@ class DateTimeCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.calendar_today,
-                color: Color(MyColors.primary),
+                color: Colors.black,
                 size: 15,
               ),
               SizedBox(
@@ -275,7 +289,7 @@ class DateTimeCard extends StatelessWidget {
                 'Mon, July 29',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Color(MyColors.primary),
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -285,7 +299,7 @@ class DateTimeCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.access_alarm,
-                color: Color(MyColors.primary),
+                color: Colors.black,
                 size: 17,
               ),
               SizedBox(
@@ -294,7 +308,7 @@ class DateTimeCard extends StatelessWidget {
               Text(
                 '11:00 ~ 12:10',
                 style: TextStyle(
-                  color: Color(MyColors.primary),
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),

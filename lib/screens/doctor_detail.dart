@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:medicare/styles/colors.dart';
@@ -15,7 +17,7 @@ class SliverDoctorDetail extends StatelessWidget {
           SliverAppBar(
             pinned: true,
             title: Text('Detail Doctor'),
-            backgroundColor: Color(MyColors.primary),
+            backgroundColor: Color.fromARGB(255, 99, 179, 110),
             expandedHeight: 200,
             flexibleSpace: FlexibleSpaceBar(
               background: Image(
@@ -56,7 +58,10 @@ class DetailBody extends StatelessWidget {
           ),
           Text(
             'About Doctor',
-            style: kTitleStyle,
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           SizedBox(
             height: 15,
@@ -64,7 +69,7 @@ class DetailBody extends StatelessWidget {
           Text(
             'Dr. Sushil is a specialist in internal medicine who specialzed blah blah.',
             style: TextStyle(
-              color: Color(MyColors.purple01),
+              color: Colors.black,
               fontWeight: FontWeight.w500,
               height: 1.5,
             ),
@@ -72,21 +77,23 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 25,
           ),
-          Text(
-            'Location',
-            style: kTitleStyle,
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          DoctorLocation(),
-          SizedBox(
-            height: 25,
-          ),
+          // Text(
+          //   'Location',
+          //   style: TextStyle(
+          //     color: Colors.black,
+          //   ),
+          // ),
+          // SizedBox(
+          //   height: 25,
+          // ),
+          // DoctorLocation(),
+          // SizedBox(
+          //   height: 25,
+          // ),
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(
-                Color(MyColors.primary),
+                Color.fromARGB(255, 99, 179, 110),
               ),
             ),
             child: Text('Book Appointment'),
@@ -98,34 +105,34 @@ class DetailBody extends StatelessWidget {
   }
 }
 
-class DoctorLocation extends StatelessWidget {
-  const DoctorLocation({
-    Key? key,
-  }) : super(key: key);
+// class DoctorLocation extends StatelessWidget {
+//   const DoctorLocation({
+//     Key? key,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 200,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: FlutterMap(
-          options: MapOptions(
-            center: latLng.LatLng(51.5, -0.09),
-            zoom: 13.0,
-          ),
-          layers: [
-            TileLayerOptions(
-              urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              subdomains: ['a', 'b', 'c'],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       width: double.infinity,
+//       height: 200,
+//       child: ClipRRect(
+//         borderRadius: BorderRadius.circular(20),
+//         child: FlutterMap(
+//           options: MapOptions(
+//             center: latLng.LatLng(51.5, -0.09),
+//             zoom: 13.0,
+//           ),
+//           layers: [
+//             TileLayerOptions(
+//               urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+//               subdomains: ['a', 'b', 'c'],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class DoctorInfo extends StatelessWidget {
   const DoctorInfo({
@@ -186,7 +193,7 @@ class NumberCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Color(MyColors.bg03),
+          color: Color.fromARGB(255, 187, 245, 194),
         ),
         padding: EdgeInsets.symmetric(
           vertical: 30,
@@ -197,7 +204,7 @@ class NumberCard extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: Color(MyColors.grey02),
+                color: Colors.black,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -208,7 +215,7 @@ class NumberCard extends StatelessWidget {
             Text(
               value,
               style: TextStyle(
-                color: Color(MyColors.header01),
+                color: Colors.black,
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
               ),
@@ -243,8 +250,7 @@ class DetailDoctorCard extends StatelessWidget {
                     Text(
                       'Dr. Sushil',
                       style: TextStyle(
-                          color: Color(MyColors.header01),
-                          fontWeight: FontWeight.w700),
+                          color: Colors.black, fontWeight: FontWeight.w700),
                     ),
                     SizedBox(
                       height: 10,
@@ -252,7 +258,7 @@ class DetailDoctorCard extends StatelessWidget {
                     Text(
                       'Heart Specialist',
                       style: TextStyle(
-                        color: Color(MyColors.grey02),
+                        color: Colors.black,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

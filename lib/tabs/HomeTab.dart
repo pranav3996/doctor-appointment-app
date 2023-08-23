@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, unused_local_variable, prefer_typing_uninitialized_variables, unnecessary_new, avoid_print
+// ignore_for_file: prefer_const_literals_to_create_immutables, unused_local_variable, prefer_typing_uninitialized_variables, unnecessary_new, avoid_print, must_be_immutable, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -67,18 +67,21 @@ class HomeTab extends StatelessWidget {
               children: [
                 Text(
                   'Appointment Today',
-                  style: kTitleStyle,
-                ),
-                TextButton(
-                  child: Text(
-                    'See All',
-                    style: TextStyle(
-                      color: Color(MyColors.yellow01),
-                      fontWeight: FontWeight.bold,
-                    ),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
-                  onPressed: () {},
-                )
+                ),
+                // TextButton(
+                //   child: Text(
+                //     'See All',
+                //     style: TextStyle(
+                //       color: Color(MyColors.yellow01),
+                //       fontWeight: FontWeight.bold,
+                //     ),
+                //   ),
+                //   onPressed: () {},
+                // )
               ],
             ),
             SizedBox(
@@ -93,7 +96,7 @@ class HomeTab extends StatelessWidget {
             Text(
               'Top Doctor',
               style: TextStyle(
-                color: Color(MyColors.header01),
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -132,62 +135,67 @@ class TopDoctorCard extends StatelessWidget {
         onTap: () {
           Navigator.pushNamed(context, '/detail');
         },
-        child: Row(
-          children: [
-            Container(
-              color: Color(MyColors.grey01),
-              child: Image(
-                width: 100,
-                image: AssetImage(img),
+        child: Container(
+          color: Color.fromARGB(255, 117, 241, 134),
+          child: Row(
+            children: [
+              Container(
+                color: Colors.white,
+                child: Image(
+                  width: 100,
+                  image: AssetImage(img),
+                ),
               ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  doctorName,
-                  style: TextStyle(
-                    color: Color(MyColors.header01),
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  doctorTitle,
-                  style: TextStyle(
-                    color: Color(MyColors.grey02),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.star,
-                      color: Color(MyColors.yellow02),
-                      size: 18,
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    doctorName,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
                     ),
-                    SizedBox(
-                      width: 5,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    doctorTitle,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
                     ),
-                    Text(
-                      '4.0 - 50 Reviews',
-                      style: TextStyle(color: Color(MyColors.grey02)),
-                    )
-                  ],
-                )
-              ],
-            )
-          ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.star,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        '4.0 - 50 Reviews',
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -208,48 +216,50 @@ class AppointmentCard extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color(MyColors.primary),
-            borderRadius: BorderRadius.circular(10),
-          ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: onTap,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: AssetImage('assets/doctor01.jpeg'),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Dr.Sushil',
-                                style: TextStyle(color: Colors.white)),
-                            SizedBox(
-                              height: 2,
-                            ),
-                            Text(
-                              'Dental Specialist',
-                              style: TextStyle(color: Color(MyColors.text01)),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    ScheduleCard(),
-                  ],
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 99, 179, 110),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: AssetImage('assets/doctor01.jpeg'),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Dr.Sushil',
+                                  style: TextStyle(color: Colors.black)),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Text(
+                                'Dental Specialist',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ScheduleCard(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -260,7 +270,7 @@ class AppointmentCard extends StatelessWidget {
           width: double.infinity,
           height: 10,
           decoration: BoxDecoration(
-            color: Color(MyColors.bg02),
+            color: Color.fromARGB(255, 156, 212, 118),
             borderRadius: BorderRadius.only(
               bottomRight: Radius.circular(10),
               bottomLeft: Radius.circular(10),
@@ -272,7 +282,7 @@ class AppointmentCard extends StatelessWidget {
           width: double.infinity,
           height: 10,
           decoration: BoxDecoration(
-            color: Color(MyColors.bg03),
+            color: Color.fromARGB(255, 187, 245, 194),
             borderRadius: BorderRadius.only(
               bottomRight: Radius.circular(10),
               bottomLeft: Radius.circular(10),
@@ -454,7 +464,7 @@ class CategoryIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      splashColor: Color(MyColors.bg01),
+      splashColor: Color.fromARGB(255, 187, 245, 194),
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
@@ -469,7 +479,7 @@ class CategoryIcon extends StatelessWidget {
               ),
               child: Icon(
                 icon,
-                color: Color(MyColors.primary),
+                color: Color.fromARGB(255, 99, 179, 110),
               ),
             ),
             SizedBox(
@@ -478,7 +488,7 @@ class CategoryIcon extends StatelessWidget {
             Text(
               text,
               style: TextStyle(
-                color: Color(MyColors.primary),
+                color: Color.fromARGB(255, 99, 179, 110),
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -499,7 +509,7 @@ class ScheduleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(MyColors.bg01),
+        color: Color.fromARGB(255, 114, 223, 127),
         borderRadius: BorderRadius.circular(10),
       ),
       width: double.infinity,
@@ -509,7 +519,7 @@ class ScheduleCard extends StatelessWidget {
         children: const [
           Icon(
             Icons.calendar_today,
-            color: Colors.white,
+            color: Colors.black,
             size: 15,
           ),
           SizedBox(
@@ -517,14 +527,14 @@ class ScheduleCard extends StatelessWidget {
           ),
           Text(
             'Mon, July 29',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
           SizedBox(
             width: 20,
           ),
           Icon(
             Icons.access_alarm,
-            color: Colors.white,
+            color: Colors.black,
             size: 17,
           ),
           SizedBox(
@@ -533,7 +543,7 @@ class ScheduleCard extends StatelessWidget {
           Flexible(
             child: Text(
               '11:00 ~ 12:10',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ),
           ),
         ],
@@ -552,7 +562,7 @@ class SearchInput extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(MyColors.bg),
+        color: Color.fromARGB(255, 187, 245, 194),
         borderRadius: BorderRadius.circular(5),
       ),
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -563,7 +573,7 @@ class SearchInput extends StatelessWidget {
             padding: const EdgeInsets.only(top: 3),
             child: Icon(
               Icons.search,
-              color: Color(MyColors.purple02),
+              color: Colors.black,
             ),
           ),
           const SizedBox(
@@ -576,8 +586,8 @@ class SearchInput extends StatelessWidget {
                 hintText: 'Search a doctor or health issue',
                 hintStyle: TextStyle(
                     fontSize: 13,
-                    color: Color(MyColors.purple01),
-                    fontWeight: FontWeight.w700),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
               ),
             ),
           ),

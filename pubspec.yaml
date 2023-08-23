@@ -17,6 +17,7 @@ dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_phone_direct_caller: 
   url_launcher: 
+  form_field_validator: 
 flutter:
   uses-material-design: true
   assets:
