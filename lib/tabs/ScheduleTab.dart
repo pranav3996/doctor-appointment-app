@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:medicare/styles/colors.dart';
-import 'package:medicare/styles/styles.dart';
 
 class ScheduleTab extends StatefulWidget {
   const ScheduleTab({Key? key}) : super(key: key);

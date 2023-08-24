@@ -6,7 +6,6 @@ import 'package:medicare/api/covid.dart';
 import 'package:medicare/api/hospital.dart';
 import 'package:medicare/api/medical.dart';
 import 'package:medicare/styles/colors.dart';
-import 'package:medicare/styles/styles.dart';
 
 List<Map> doctors = [
   {
@@ -72,16 +71,6 @@ class HomeTab extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                // TextButton(
-                //   child: Text(
-                //     'See All',
-                //     style: TextStyle(
-                //       color: Color(MyColors.yellow01),
-                //       fontWeight: FontWeight.bold,
-                //     ),
-                //   ),
-                //   onPressed: () {},
-                // )
               ],
             ),
             SizedBox(
@@ -136,7 +125,7 @@ class TopDoctorCard extends StatelessWidget {
           Navigator.pushNamed(context, '/detail');
         },
         child: Container(
-          color: Color.fromARGB(255, 117, 241, 134),
+          color: Color.fromARGB(255, 187, 245, 194),
           child: Row(
             children: [
               Container(
@@ -509,7 +498,7 @@ class ScheduleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 114, 223, 127),
+        color: Color.fromARGB(255, 187, 245, 194),
         borderRadius: BorderRadius.circular(10),
       ),
       width: double.infinity,

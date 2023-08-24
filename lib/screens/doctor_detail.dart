@@ -1,10 +1,8 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_literals_to_create_immutables, curly_braces_in_flow_control_structures, deprecated_member_use, unused_element, use_key_in_widget_constructors, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:medicare/styles/colors.dart';
-import 'package:medicare/styles/styles.dart';
-import "package:latlong2/latlong.dart" as latLng;
+
+import 'package:url_launcher/url_launcher.dart';
 
 class SliverDoctorDetail extends StatelessWidget {
   const SliverDoctorDetail({Key? key}) : super(key: key);
@@ -36,9 +34,87 @@ class SliverDoctorDetail extends StatelessWidget {
 }
 
 class DetailBody extends StatelessWidget {
-  const DetailBody({
-    Key? key,
-  }) : super(key: key);
+  DateTime selectedDate = DateTime.now();
+  TextEditingController numberController = TextEditingController();
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Color.fromARGB(255, 187, 245, 194), // <-- SEE HERE
+              onPrimary: Color.fromARGB(255, 99, 179, 110), // <-- SEE HERE
+              onSurface: Color.fromARGB(255, 99, 179, 110), // <-- SEE HERE
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: Color.fromARGB(255, 99, 179, 110), // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != selectedDate) {
+      selectedDate = picked;
+    }
+    await _showSMSDialog(context);
+  }
+
+  Future<void> sendSMS(String message, String number) async {
+    String uri = 'sms:$number?body=${Uri.encodeComponent(message)}';
+
+    if (await canLaunch(uri)) {
+      await launch(uri);
+      print(uri);
+    } else {
+      print('Could not launch SMS');
+    }
+  }
+
+  Future<void> _showSMSDialog(BuildContext context) async {
+    String message = "Appointment is Booked!";
+    String number = "8108863547";
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Send SMS'),
+          content: Text('Do you want to send the reminder SMS?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Send'),
+              onPressed: () async {
+                // String number = numberController.text;
+                // TextField(
+                //   controller: numberController,
+                //   decoration: InputDecoration(labelText: "Phone Number"),
+                // );
+                if (number.isNotEmpty) {
+                  await sendSMS(message, number);
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,19 +153,6 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 25,
           ),
-          // Text(
-          //   'Location',
-          //   style: TextStyle(
-          //     color: Colors.black,
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 25,
-          // ),
-          // DoctorLocation(),
-          // SizedBox(
-          //   height: 25,
-          // ),
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(
@@ -97,42 +160,15 @@ class DetailBody extends StatelessWidget {
               ),
             ),
             child: Text('Book Appointment'),
-            onPressed: () => {},
-          )
+            onPressed: () => _selectDate(context),
+          ),
+          // SizedBox(height: 20),
+          // Text("Selected Date: ${selectedDate.toLocal()}".split(' ')[0]),
         ],
       ),
     );
   }
 }
-
-// class DoctorLocation extends StatelessWidget {
-//   const DoctorLocation({
-//     Key? key,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SizedBox(
-//       width: double.infinity,
-//       height: 200,
-//       child: ClipRRect(
-//         borderRadius: BorderRadius.circular(20),
-//         child: FlutterMap(
-//           options: MapOptions(
-//             center: latLng.LatLng(51.5, -0.09),
-//             zoom: 13.0,
-//           ),
-//           layers: [
-//             TileLayerOptions(
-//               urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-//               subdomains: ['a', 'b', 'c'],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class DoctorInfo extends StatelessWidget {
   const DoctorInfo({
