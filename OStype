@@ -1,0 +1,508 @@
+Service
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { OSType } from './os-type.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OSTypeService {
+
+
+
+
+  private apiUrl = 'https://localhost:7291/api/OSTypeMaster';
+
+  constructor(private http: HttpClient) { }
+
+  getAllOSType(): Observable<any> {
+    return this.http.get(`${this.apiUrl}`);
+  }
+
+ saveOSType(value:string,data: OSType): Observable<any> {
+  return this.http.post(`${this.apiUrl}/?osName=${value}`, data);
+}
+updateOS(infraRoleID: number, payload: any): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${infraRoleID}`, payload);
+}
+
+deleteOSType(id: any): Observable<any>{
+  return this.http.delete(`${this.apiUrl}/${id}`);
+}
+
+searchOSType(value:string):Observable<any>{
+  return this.http.get(`${this.apiUrl}/OSTypeName?OSTypeName=${value}`);
+}
+
+
+searchUser(query?: string, value?: boolean): Observable<any> {
+
+  let params = new HttpParams();
+  if (query !== undefined) {
+    params = params.append('OSTypeName', query);
+  }
+  
+  if (value !== undefined) {
+    params = params.append('activeStatus', value.toString());
+  }
+
+  return this.http.get(`${this.apiUrl}/OSTypeNameAndStatusCode`, { params });
+}
+
+
+}
+model
+export interface OSType {
+    osTypeName: string;
+    activeStatus: boolean;
+    infraRoleID?: number;
+  }
+component
+import { Component, OnInit } from '@angular/core';
+import { OSTypeService } from './os-type.service';
+import { OSType } from './os-type.model';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+  selector: 'app-os-type',
+  templateUrl: './os-type.component.html',
+  styleUrls: ['./os-type.component.scss'],
+})
+export class OSTypeComponent implements OnInit {
+  allTableData: any[] = [];
+  tableData: any[] = [];
+  selectedRow: any = {};
+  infraRoleID = 0;
+  osTypeName: string = '';
+
+  activeStatus: boolean | undefined;
+
+  isEditMode: boolean = false;
+
+  editingRoleId: number | null = null;
+
+  constructor(private osTypeService: OSTypeService, private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData(): void {
+    this.osTypeService.getAllOSType().subscribe((data) => {
+      console.log('get data', data);
+
+      this.allTableData = data;
+      this.tableData = data; // Initially display all data
+    });
+  }
+
+  onSubmit() {
+    if (this.editingRoleId !== null) {
+      const payload = {
+        osTypeName: this.osTypeName,
+        activeStatus: this.activeStatus,
+        infraRoleID: this.editingRoleId,
+      };
+      // Assuming updateData() is a method to send data to the server
+      this.updateData(this.editingRoleId, payload);
+      this.osTypeName = '';
+      this.activeStatus=undefined;
+      // this.activeStatus = null;
+    } else {
+      const osNameValue = this.osTypeName;
+      const data: OSType = {
+        osTypeName: this.osTypeName,
+        activeStatus: this.activeStatus as boolean,
+      };
+
+      this.osTypeService.saveOSType(osNameValue, data).subscribe((response) => {
+        console.log('post data', data);
+        this.tableData.push(data);
+
+        this.loadData();
+        this.osTypeName = '';
+        this.activeStatus=undefined;
+      });
+    }
+  }
+
+  isSearchButtonDisabled: boolean = false;
+  editRow(infraRoleID: number) {
+    this.isSearchButtonDisabled = true;
+    const item = this.tableData.find((i) => i.infraRoleID === infraRoleID);
+    if (item) {
+      this.osTypeName = item.osTypeName;
+      this.activeStatus = item.activeStatus;
+      this.editingRoleId = infraRoleID;
+      this.isEditMode = true;
+    }
+  }
+
+  updateData(infraRoleID: number, payload: any) {
+    console.log(payload);
+
+    this.osTypeService.updateOS(infraRoleID, payload).subscribe({
+      next: (response) => {
+        const index = this.tableData.findIndex(
+          (i) => i.infraRoleID === infraRoleID
+        );
+        if (index !== -1) {
+          this.tableData[index] = { ...this.tableData[index], ...payload };
+        }
+        this.resetForm();
+        this.editingRoleId = null;
+      },
+      error: (error) => {
+        console.error('Error updating data:', error);
+      },
+    });
+    this.isEditMode = false;
+  }
+
+  deleteRow(infraRoleID: number): void {
+    this.osTypeService.deleteOSType(infraRoleID).subscribe(
+      (data) => {
+        console.log(data);
+
+        this.loadData();
+      },
+      (error) => console.error(error)
+    );
+  }
+
+  resetForm(): void {
+    this.osTypeService.getAllOSType().subscribe((data) => {
+      this.tableData = data;
+    });
+  }
+
+  onSearch() {
+    const activeStatus = this.activeStatus;
+
+    if (activeStatus !== undefined) {
+      this.osTypeService.searchUser(this.osTypeName, activeStatus).subscribe(
+        (data) => {
+          this.tableData = data;
+          this.osTypeName = '';
+          this.activeStatus=undefined;
+        },
+        (error) => {
+          console.error('Error occurred while searching:', error);
+        }
+      );
+    } else {
+      this.osTypeService.searchUser(this.osTypeName).subscribe(
+        (data) => {
+          this.tableData = data;
+          this.osTypeName = '';
+          this.activeStatus=undefined;
+        },
+        (error) => {
+          console.error('Error occurred while searching:', error);
+        }
+      );
+    }
+  }
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1c32d6;
+    border-color: #1c32d6;
+}
+
+  .btn-primary:hover {
+    background: #cb2448; 
+    border:none ;
+  }
+  
+ 
+  
+HTML
+<div id="preloader">
+    <div class="sk-three-bounce">
+      <div class="sk-child sk-bounce1"></div>
+      <div class="sk-child sk-bounce2"></div>
+      <div class="sk-child sk-bounce3"></div>
+    </div>
+  </div>
+  <!--*******************
+          Preloader end
+      ********************-->
+  <!--**********************************
+          Main wrapper start
+      ***********************************-->
+  <div id="main-wrapper">
+    <!--**********************************
+              Nav header start
+          ***********************************-->
+    <div class="nav-header">
+      <div class="nav-control">
+        <div class="hamburger"><span class="line"></span><span class="line"></span><span class="line"></span></div>
+      </div>
+      <div class="bg_logo"> <a href="index.html" class="brand-logo bg_logo_padi"> <img class="logo-abbr" src="../../public/images/logo.png" alt="" style="width: 85%; display: flex; margin-top: -31px;" /> </a> </div>
+    </div>
+    <!--**********************************
+              Nav header end
+          ***********************************-->
+    <!--**********************************
+              Header start
+          ***********************************-->
+    <!--**********************************
+    
+  
+  **********************************
+    Header start
+  ***********************************-->
+    <div class="header">
+      <div class="header-content">
+        <nav class="navbar navbar-expand">
+          <div class="collapse navbar-collapse justify-content-between">
+            <div class="dashboard_bar"></div>
+            <div class="header-left">
+              <div class="dashboard_bar">ACCESS ROLE MANAGEMENT SYSTEM</div>
+            </div>
+            <div class="navbar-nav header-right log_txt">
+              <div class="dashboard_bar log_txt_w60">
+                <div class="log_txt_s">
+                  <div>Jyotiraj Sahoo</div>
+                  <div>03-Jan-2024 03:00 PM</div>
+                </div>
+                <div class="icon_s">
+                  <div> <a href="../../login.html" class="icon_s_inn"><i class="flaticon-381-exit"> </i></a> </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <!--**********************************
+              Sidebar start
+          ***********************************-->
+    <!--**********************************
+    Sidebar start
+  ***********************************-->
+    <div class="deznav">
+      <div class="deznav-scroll">
+        <ul class="metismenu" id="menu">
+          <li> <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"> <i class="flaticon-381-networking"></i> <span class="nav-text">Master</span> </a>
+            <ul aria-expanded="false">
+             <li> <a class="has-arrow" href="javascript:void()" aria-expanded="false">Application</a>
+                <ul aria-expanded="false" class="lft_br">
+                  <li><a href="#">Application Portfolio(Maker)</a></li>
+                  <li><a href="#">Access Control Matrix(Maker)</a></li>
+                  <li><a href="#">Authorizers(Maker)</a></li>
+                  <li><a href="#">Application Portfolio list</a></li>
+                  <li><a href="#">Exception Approver Master</a></li>
+                  <li><a href="#">Application DL Master</a></li>
+                  <li><a href="#">Application Additional Info</a></li>
+                  <li><a href="#">Vendor Bulk Upload</a></li>
+                  
+                  <li><a href="../Application/ConsultantIdModify.html">Approver Change</a></li>
+                  <li><a href="../Application/User_Role_Mapping.html">User Role Mapping</a></li>
+                  <li><a href="../Application/Other-Entitlement-Owner-Mapping.html">Other Entitlement Owner Mapping</a></li>
+                  <li><a href="../Application/Other-Entitlement-non-standard-Application.html">Non Standard Application</a></li>
+                  <li><a href="../Application/HCM-Approver-Mapping.html">HCM Approver Mapping</a></li>
+                </ul>
+              </li>
+              <li> <a class="has-arrow" href="javascript:void()" aria-expanded="false">Infra</a>
+                <ul aria-expanded="false" class="lft_br">
+                  <li><a href="Employee_Vendor_Master.html">Employee Vendor Master</a></li>
+                  <li><a href="System_IDs_Master.html">Systems IDs Master</a></li>
+                  <li><a href="Events_Updates.html">Event & Updates</a></li>
+                  <li><a href="System_IDs_Authorizer_Mapping.html">System IDs Authorize Mapping</a></li>
+                  <li><a href="Infra_type_Id_master.html">Infra Type of ID Master</a></li>
+                  <li><a href="Infra_role.html">Infra Role</a></li>
+                  <li><a href="OS_Type.html">OS Type</a></li>
+                  <li><a href="Middleware_Type.html">Middleware Type</a></li>
+                  <li><a href="ARN_No.html">ARN No</a></li>
+                  <li><a href="Type_of_Console.html">Type of Console</a></li>
+                  <li><a href="CBS_2FA_Authorizer_Mapping.html">CBS 2FA Authorizer Mapping</a></li>
+                  <li><a href="Gardening_Leave_Auth_Mapping.html">Gardening Leave Auth Mapping</a></li>
+                  <li><a href="SFTP_Authorizer_Mapping.html">SFTP Authorizer Mapping</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li> <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"> <i class="flaticon-381-television"></i> <span class="nav-text">Requestor</span> </a>
+            <ul aria-expanded="false" class="lft_br">
+              <li><a href="email-compose.html">Employee Vendor Master</a></li>
+              <li><a href="#">Systems IDs Master</a></li>
+              <li><a href="#">Event & Updates</a></li>
+            </ul>
+          </li>
+          <li> <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"> <i class="flaticon-381-file"></i> <span class="nav-text">Approver</span> </a>
+            <ul aria-expanded="false" class="lft_br">
+              <li><a href="email-compose.html">Employee Vendor Master</a></li>
+              <li><a href="#">Systems IDs Master</a></li>
+              <li><a href="#">Event & Updates</a></li>
+            </ul>
+          </li>
+          <li> <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"> <i class="flaticon-381-internet"></i> <span class="nav-text">ID Creation</span> </a>
+            <ul aria-expanded="false" class="lft_br">
+              <li><a href="email-compose.html">Employee Vendor Master</a></li>
+              <li><a href="#">Systems IDs Master</a></li>
+              <li><a href="#">Event & Updates</a></li>
+            </ul>
+          </li>
+          <li> <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"> <i class="flaticon-381-heart"></i> <span class="nav-text">Entitlement</span> </a>
+            <ul aria-expanded="false" class="lft_br">
+              <li><a href="email-compose.html">Employee Vendor Master</a></li>
+              <li><a href="#">Systems IDs Master</a></li>
+              <li><a href="#">Event & Updates</a></li>
+            </ul>
+          </li>
+          <li> <a href="widget-basic.html" class="has-arrow ai-icon" aria-expanded="false"> <i class="flaticon-381-note"></i> <span class="nav-text">Report</span> </a>
+            <ul aria-expanded="false" class="lft_br">
+              <li><a href="email-compose.html">Employee Vendor Master</a></li>
+              <li><a href="#">Systems IDs Master</a></li>
+              <li><a href="#">Event & Updates</a></li>
+            </ul>
+          </li>
+          <li> <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"> <i class="flaticon-381-notepad"></i> <span class="nav-text">Status</span> </a>
+            <ul aria-expanded="false" class="lft_br">
+              <li><a href="email-compose.html">Employee Vendor Master</a></li>
+              <li><a href="#">Systems IDs Master</a></li>
+              <li><a href="#">Event & Updates</a></li>
+            </ul>
+          </li>
+          <li> <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"> <i class="flaticon-381-network"></i> <span class="nav-text">RBAS</span> </a>
+            <ul aria-expanded="false" class="lft_br">
+              <li><a href="email-compose.html">RBAS Employee Vendor Master</a></li>
+              <li><a href="#">Systems IDs Master</a></li>
+              <li><a href="#">Event & Updates</a></li>
+            </ul>
+          </li>
+          <li> </li>
+        </ul>
+      </div>
+    </div>
+    <!--**********************************
+    Sidebar end
+  ***********************************-->
+    <!--**********************************
+              Sidebar end
+          ***********************************-->
+    <!--**********************************
+              Content body start
+          ***********************************-->
+    <div class="content-body">
+      <!-- row -->
+      <div class="container-fluid">
+        <!-- Add Order -->
+        <!-- row -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">OS TYPE MASTER</h4>
+              </div>
+              <div class="card-body">
+                <div>
+                  <!-- <div class="row">
+                    <div class="col-md-2 col-sm-6 set_c_p8">OS Type Name <span class="txt_r">*</span> :</div>
+                  <div class="col-md-4 col-sm-6">
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="osTypeName"
+                        placeholder="OS Type Name" [(ngModel)]="osTypeName" >                                            
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-2 col-sm-6 set_c_p8">Active Status <span class="txt_r">*</span> :</div>
+                    <div class="col-md-4 col-sm-6 set_c_2p8">
+                      <div class="form-group">
+                        <input type="radio" id="activeRadio" name="statusRadio"[(ngModel)]="activeStatus" [value]="true">                     
+                           Active  &nbsp;
+                        <input type="radio"  id="inactiveRadio" name="statusRadio" [(ngModel)]="activeStatus" [value]="false">
+                        Inactive
+                      </div>
+                    </div>
+                
+                    <div class="col-md-12 col-sm-12 btn_s">
+                      <button type="submit" class="btn btn-primary" style="margin-right: 10px;" (click)="onSubmit()">{{ isEditMode ? 'Update' : 'Submit' }}</button>
+                      <button type="submit" class="btn btn-primary" (click)="resetForm()" style="margin-right: 10px;" >Reset</button>
+                      <button type="submit" class="btn btn-primary" (click)="onSearch()">Search</button>
+
+                    </div>
+                  </div> -->
+                   <form (submit)="onSubmit()">
+                    <div class="row">
+                        <div class="col-md-2 col-sm-6 set_c_p8">OS Type Name <span class="txt_r">*</span> :</div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="osTypeName" placeholder="OS Type Name" [(ngModel)]="osTypeName" [ngModelOptions]="{standalone: true}">                                            
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 col-sm-6 set_c_p8">Active Status <span class="txt_r">*</span> :</div>
+                        <div class="col-md-4 col-sm-6 set_c_2p8">
+                            <div class="form-group">
+                              <input type="radio" id="activeRadio" name="statusRadio" [(ngModel)]="activeStatus" [value]="true" [ngModelOptions]="{standalone: true}">
+                                            
+                                Active  &nbsp;
+                                <input type="radio" id="inactiveRadio" name="statusRadio" [(ngModel)]="activeStatus" [value]="false" [ngModelOptions]="{standalone: true}">   
+                                Inactive
+                            </div>
+                        </div>
+                    
+                        <div class="col-md-12 col-sm-12 btn_s">
+                            <button type="submit" class="btn btn-primary"  [disabled]="!osTypeName || activeStatus === null || activeStatus === undefined" style="margin-right: 10px;">
+                                {{ isEditMode ? 'Update' : 'Submit' }}
+                            </button>
+                            <button type="button" class="btn btn-primary" (click)="resetForm()" style="margin-right: 10px;">Reset
+                            </button>
+                            <button type="button" class="btn btn-primary" (click)="onSearch()"   [disabled]="(!osTypeName && (activeStatus === null || activeStatus === undefined)) ">Search</button>
+                        </div>
+                    </div>
+                </form> 
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-bordered verticle-middle table-responsive-sm">
+                    <thead>
+                      <tr style="background: #e1e8f6;">
+                        <th scope="col">Infra Role IDs</th>
+                        <th scope="col">Infra Role Name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                  
+                    <tbody>
+                      <tr *ngFor="let item of tableData">
+                        <td>{{ item.infraRoleID }}</td>
+                        <td>{{ item.osTypeName }}</td>
+                        <td>{{ item.activeStatus ? 'Active' : 'Inactive' }}</td>
+
+                        <td>
+                          <span>
+                            <a href="javascript:void()" class="mr-4" (click)="editRow(item.infraRoleID)" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil color-muted"></i></a>
+                            <a href="javascript:void(0);" (click)="deleteRow(item.infraRoleID)" data-placement="top" data-toggle="tooltip" data-dismiss="alert" aria-label="Close" title="Delete"><i class="fa fa-close color-danger"></i></a>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                                      
+                
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--**********************************
+    Footer start
+  ***********************************-->
+    <div class="footer ftr_txt">
+      <div class="copyright">
+        <p>Copyright &copy;2024 YES BANK All Rights Reserved</p>
+      </div>
+    </div>
+    <!--**********************************
+    Footer end
+  ***********************************-->
+  </div>
+
